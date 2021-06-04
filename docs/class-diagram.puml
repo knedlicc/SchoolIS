@@ -1,0 +1,85 @@
+@startuml
+skinparam classAttributeIconSize 0
+class cz.cvut.rsp.help.school.model.Person {
+	-firstName : String
+	-lastName : String
+	-email : String
+	-birthDate : Date
+	-phoneNumber : String
+	-password : String
+	-rawPassword : String
+	-role : Role
+	-school : School
+}
+cz.cvut.rsp.help.school.model.Person -- cz.cvut.rsp.help.school.model.Role
+cz.cvut.rsp.help.school.model.Person -- cz.cvut.rsp.help.school.model.School
+class cz.cvut.rsp.help.school.model.Role {
+	-name : String
+}
+class cz.cvut.rsp.help.school.model.subject.SubjectAssignment {
+	-subject : Subject
+}
+cz.cvut.rsp.help.school.model.subject.SubjectAssignment -- cz.cvut.rsp.help.school.model.subject.Subject
+class cz.cvut.rsp.help.school.model.subject.SubjectTutor {
+	-subject : Subject
+	-tutor : Person
+}
+cz.cvut.rsp.help.school.model.subject.SubjectTutor -- cz.cvut.rsp.help.school.model.subject.Subject
+cz.cvut.rsp.help.school.model.subject.SubjectTutor -- cz.cvut.rsp.help.school.model.Person
+class cz.cvut.rsp.help.school.model.subject.Subject {
+	-school : School
+	-tutors : Set<SubjectTutor>
+	-assignments : Set<SubjectAssignment>
+	-code : String
+	-name : String
+	-credits : Integer
+	-type : SubjectType
+	-completion : SubjectCompletion
+}
+cz.cvut.rsp.help.school.model.subject.Subject -- cz.cvut.rsp.help.school.model.School
+cz.cvut.rsp.help.school.model.subject.Subject -- cz.cvut.rsp.help.school.model.subject.SubjectType
+cz.cvut.rsp.help.school.model.subject.Subject -- cz.cvut.rsp.help.school.model.subject.SubjectCompletion
+class cz.cvut.rsp.help.school.model.subject.SubjectCompletion {
+	-name : String
+}
+class cz.cvut.rsp.help.school.model.subject.SubjectType {
+	-name : String
+}
+class cz.cvut.rsp.help.school.model.School {
+	-subjects : Set<Subject>
+	-semesters : Set<Semester>
+}
+class cz.cvut.rsp.help.school.model.semester.SemesterSubject {
+	-semester : Semester
+	-subject : Subject
+	-students : Set<SemesterSubjectStudent>
+}
+cz.cvut.rsp.help.school.model.semester.SemesterSubject -- cz.cvut.rsp.help.school.model.semester.Semester
+cz.cvut.rsp.help.school.model.semester.SemesterSubject -- cz.cvut.rsp.help.school.model.subject.Subject
+class cz.cvut.rsp.help.school.model.semester.SemesterSubjectStudent {
+	-semesterSubject : SemesterSubject
+	-student : Person
+	-mark : Mark
+}
+cz.cvut.rsp.help.school.model.semester.SemesterSubjectStudent -- cz.cvut.rsp.help.school.model.semester.SemesterSubject
+cz.cvut.rsp.help.school.model.semester.SemesterSubjectStudent -- cz.cvut.rsp.help.school.model.Person
+cz.cvut.rsp.help.school.model.semester.SemesterSubjectStudent -- cz.cvut.rsp.help.school.model.semester.Mark
+class cz.cvut.rsp.help.school.model.semester.Semester {
+	-school : School
+	-year : Integer
+	-semester : Integer
+	-subjects : Set<SemesterSubject>
+}
+cz.cvut.rsp.help.school.model.semester.Semester -- cz.cvut.rsp.help.school.model.School
+class cz.cvut.rsp.help.school.model.semester.Mark {
+	-name : String
+}
+class cz.cvut.rsp.help.school.model.semester.SemesterSubjectStudentAssignment {
+	-semesterSubjectStudent : SemesterSubjectStudent
+	-subjectAssignment : SubjectAssignment
+	-mark : Mark
+}
+cz.cvut.rsp.help.school.model.semester.SemesterSubjectStudentAssignment -- cz.cvut.rsp.help.school.model.semester.SemesterSubjectStudent
+cz.cvut.rsp.help.school.model.semester.SemesterSubjectStudentAssignment -- cz.cvut.rsp.help.school.model.subject.SubjectAssignment
+cz.cvut.rsp.help.school.model.semester.SemesterSubjectStudentAssignment -- cz.cvut.rsp.help.school.model.semester.Mark
+@enduml

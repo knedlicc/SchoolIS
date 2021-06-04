@@ -1,0 +1,48 @@
+version: "3.3"
+
+services:
+  traefik:
+    image: traefik:v2.3
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+#      # Traefik will listen to incoming request on the port 443 (https)
+#      - "--entrypoints.websecure.address=:443"
+#      # Redirect from http to https
+#      - "--entryPoints.web.address=:80"
+#      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+#      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+#      # Enable a tls challenge named "cert_resolver"
+#      - "--certificatesresolvers.cert_resolver.acme.tlschallenge=true"
+#      - "--certificatesresolvers.cert_resolver.acme.email=${ACME_EMAIL:-root@example.com}"
+#      - "--certificatesresolvers.cert_resolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - 80:80
+#      - 443:443
+    volumes:
+#      # Create a letsencrypt dir within the folder where the docker-compose file is
+#      - "/etc/letsencrypt:/letsencrypt"
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  postgres:
+    image: postgres:alpine
+    ports:
+      - 5433:5432
+#    volumes:
+#      - /var/lib/postgresql/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pass}
+      POSTGRES_DB: ${POSTGRES_DB:-rsp_help_school}
+
+  spring:
+    depends_on:
+      - postgres
+    build:
+      dockerfile: ./.docker/spring.Dockerfile
+      context: ..
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.spring.loadbalancer.server.port=8080"
+      - "traefik.http.routers.spring.rule=Host(`${BASE_DOMAIN}`)"

@@ -1,0 +1,24 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-u_rsp_help_school}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-superSeQurePasswd}
+      POSTGRES_DB: ${POSTGRES_DB:-rsp_help_school}
+    ports:
+      - 5432:5432
+
+  pgadmin4:
+    image: dpage/pgadmin4
+    ports:
+      - 8098:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=root@example.com
+      - PGADMIN_DEFAULT_PASSWORD=pass
+
+volumes:
+  postgres_data:
